@@ -1,0 +1,51 @@
+#include <stdio.h>
+
+// Structure to store product information
+struct Product {
+    int id;
+    char name[30];
+    float price;
+};
+
+int main() {
+    // Initializing small sample inventory
+    struct Product store[3] = {
+        {101, "Milk (1L)", 60.0},
+        {102, "Bread", 40.0},
+        {103, "Eggs", 120.0}
+    };
+
+    int choice, id, quantity, found, i;
+    float total_bill = 0.0;
+
+    while (1) {
+        printf("\n1. View Menu\n2. Create Bill\n3. Exit\nChoice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            printf("\nID\tName\t\tPrice\n");
+            for (i = 0; i < 3; i++)
+                printf("%d\t%-10s\t%.2f\n", store[i].id, store[i].name, store[i].price);
+        } else if (choice == 2) {
+            total_bill = 0;
+            while (1) {
+                printf("Enter Product ID (0 to finish): ");
+                scanf("%d", &id);
+                if (id == 0) break;
+                found = 0;
+                for (i = 0; i < 3; i++) {
+                    if (store[i].id == id) {
+                        printf("Quantity: ");
+                        scanf("%d", &quantity);
+                        total_bill += (store[i].price * quantity);
+                        found = 1;
+                        break;
+                    }
+                }
+                if (!found) printf("Invalid ID!\n");
+            }
+            printf("Total Bill: %.2f\n", total_bill);
+        } else break;
+    }
+    return 0;
+}
