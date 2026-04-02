@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+
+struct Item {
+    int id;
+    char name[30];
+    float price;
+};
+
+int main() {
+    struct Item menu[] = {
+        {1, "Apple", 1.50},
+        {2, "Bread", 2.20},
+        {3, "Milk", 1.80},
+        {4, "Eggs", 3.50}
+    };
+    int n = 4, id, qty, found;
+    float total = 0;
+
+    printf("--- Super Shop Billing ---\n");
+    for(int i = 0; i < n; i++) {
+        printf("%d. %-10s $%.2f\n", menu[i].id, menu[i].name, menu[i].price);
+    }
+
+    while(1) {
+        printf("\nEnter Item ID (0 to finish): ");
+        scanf("%d", &id);
+        if(id == 0) break;
+
+        found = 0;
+        for(int i = 0; i < n; i++) {
+            if(menu[i].id == id) {
+                printf("Enter Quantity: ");
+                scanf("%d", &qty);
+                total += menu[i].price * qty;
+                printf("Added: %s x %d\n", menu[i].name, qty);
+                found = 1;
+                break;
+            }
+        }
+        if(!found) printf("Invalid ID!\n");
+    }
+
+    printf("\n----------------------\n");
+    printf("TOTAL AMOUNT: $%.2f\n", total);
+    printf("----------------------\n");
+
+    return 0;
+}
