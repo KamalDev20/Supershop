@@ -3,7 +3,7 @@
 
 struct Item {
     int id;
-    char name[30];
+    char name[40];
     float price;
 };
 
