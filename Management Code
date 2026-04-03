@@ -3,7 +3,7 @@
 // Structure to store product information
 struct Product {
     int id;
-    char name[30];
+    char name[40];
     float price;
 };
 
