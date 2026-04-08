@@ -9,7 +9,7 @@ struct Item {
 
 int main() {
     struct Item menu[] = {
-        {1, "Apple", 1.50},
+        {1, "Apple", 1.70},
         {2, "Bread", 2.20},
         {3, "Milk", 1.80},
         {4, "Eggs", 3.50}
