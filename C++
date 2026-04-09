@@ -1,1 +1,68 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+class Student {
+public:
+    string name;
+    int roll;
+    float marks;
+
+    // Method to enter student details
+    void addStudent() {
+        cout << "Enter Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter Roll Number: ";
+        cin >> roll;
+        cout << "Enter Marks: ";
+        cin >> marks;
+    }
+
+    // Method to display student details
+    void display() {
+        cout << "\nRoll No: " << roll;
+        cout << "\nName: " << name;
+        cout << "\nMarks: " << marks << endl;
+    }
+};
+
+int main() {
+    int choice;
+    Student s;
+
+    while (true) {
+        cout << "\n--- Student Management System ---";
+        cout << "\n1. Add Student Record";
+        cout << "\n2. View All Records";
+        cout << "\n3. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            ofstream file("students.txt", ios::app); // Open file in append mode
+            s.addStudent();
+            file << s.roll << " " << s.name << " " << s.marks << endl;
+            file.close();
+            cout << "Record saved successfully!\n";
+        } 
+        else if (choice == 2) {
+            ifstream file("students.txt");
+            cout << "\n--- All Student Records ---";
+            while (file >> s.roll >> s.name >> s.marks) {
+                s.display();
+            }
+            file.close();
+        } 
+        else if (choice == 3) {
+            break;
+        } 
+        else {
+            cout << "Invalid choice! Try again.\n";
+        }
+    }
+    return 0;
+}
 
