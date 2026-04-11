@@ -1,1 +1,67 @@
+#include <stdio.h>
+#include <string.h>
+
+// Structure to store product details
+struct Product {
+    int id;
+    char name[30];
+    float price;
+    int stock;
+};
+
+void displayMenu(struct Product shop[], int size) {
+    printf("\n--- Welcome to Super Shop ---\n");
+    printf("ID\tName\t\tPrice\tStock\n");
+    for(int i = 0; i < size; i++) {
+        printf("%d\t%-10s\t%.2f\t%d\n", shop[i].id, shop[i].name, shop[i].price, shop[i].stock);
+    }
+}
+
+int main() {
+    // Initializing shop inventory
+    struct Product inventory[] = {
+        {101, "Milk", 50.0, 20},
+        {102, "Bread", 35.0, 15},
+        {103, "Eggs (doz)", 120.0, 10},
+        {104, "Rice (1kg)", 70.0, 50}
+    };
+    int n = 4;
+    int choice, qty, found;
+    float totalBill = 0;
+
+    while(1) {
+        displayMenu(inventory, n);
+        printf("\nEnter Product ID to buy (0 to checkout): ");
+        scanf("%d", &choice);
+
+        if(choice == 0) break;
+
+        found = 0;
+        for(int i = 0; i < n; i++) {
+            if(inventory[i].id == choice) {
+                found = 1;
+                printf("Enter quantity for %s: ", inventory[i].name);
+                scanf("%d", &qty);
+
+                if(qty <= inventory[i].stock) {
+                    float cost = qty * inventory[i].price;
+                    inventory[i].stock -= qty;
+                    totalBill += cost;
+                    printf("Added to cart! Item Total: %.2f\n", cost);
+                } else {
+                    printf("Out of stock! Only %d left.\n", inventory[i].stock);
+                }
+                break;
+            }
+        }
+        if(!found) printf("Invalid Product ID!\n");
+    }
+
+    // Final Receipt
+    printf("\n--- Final Bill ---\n");
+    printf("Grand Total: %.2f TK\n", totalBill);
+    printf("Thank you for shopping!\n");
+
+    return 0;
+}
 
