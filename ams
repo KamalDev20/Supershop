@@ -1,0 +1,114 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <algorithm>
+
+using namespace std;
+
+class Student {
+public:
+    int id;
+    string name;
+    float gpa;
+
+    Student(int i, string n, float g) : id(i), name(n), gpa(g) {}
+
+    void display() const {
+        cout << "ID: " << id << " | Name: " << name << " | GPA: " << gpa << endl;
+    }
+};
+
+class ManagementSystem {
+private:
+    vector<Student> students;
+    const string filename = "students.txt";
+
+    void saveToFile() {
+        ofstream outFile(filename);
+        for (const auto& s : students) {
+            outFile << s.id << "," << s.name << "," << s.gpa << endl;
+        }
+        outFile.close();
+    }
+
+public:
+    ManagementSystem() {
+        ifstream inFile(filename);
+        int id;
+        string name;
+        float gpa;
+        char comma;
+        while (inFile >> id >> comma && getline(inFile.ignore(), name, ',') && inFile >> gpa) {
+            students.emplace_back(id, name, gpa);
+        }
+        inFile.close();
+    }
+
+    void addStudent() {
+        int id;
+        string name;
+        float gpa;
+        cout << "Enter ID: "; cin >> id;
+        cout << "Enter Name: "; cin.ignore(); getline(cin, name);
+        cout << "Enter GPA: "; cin >> gpa;
+        students.emplace_back(id, name, gpa);
+        saveToFile();
+    }
+
+    void showAll() const {
+        if (students.empty()) {
+            cout << "No records found." << endl;
+            return;
+        }
+        for (const auto& s : students) s.display();
+    }
+
+    void searchStudent(int id) const {
+        auto it = find_if(students.begin(), students.end(), [id](const Student& s) {
+            return s.id == id;
+        });
+        if (it != students.end()) it->display();
+        else cout << "Student not found." << endl;
+    }
+
+    void deleteStudent(int id) {
+        auto it = remove_if(students.begin(), students.end(), [id](const Student& s) {
+            return s.id == id;
+        });
+        if (it != students.end()) {
+            students.erase(it, students.end());
+            saveToFile();
+            cout << "Record deleted." << endl;
+        } else {
+            cout << "Record not found." << endl;
+        }
+    }
+};
+
+int main() {
+    ManagementSystem sms;
+    int choice;
+    while (true) {
+        cout << "\n1. Add Student\n2. Show All\n3. Search\n4. Delete\n5. Exit\nChoice: ";
+        cin >> choice;
+        if (choice == 5) break;
+        switch (choice) {
+            case 1: sms.addStudent(); break;
+            case 2: sms.showAll(); break;
+            case 3: {
+                int id;
+                cout << "ID: "; cin >> id;
+                sms.searchStudent(id);
+                break;
+            }
+            case 4: {
+                int id;
+                cout << "ID: "; cin >> id;
+                sms.deleteStudent(id);
+                break;
+            }
+        }
+    }
+    return 0;
+}
