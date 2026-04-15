@@ -112,3 +112,73 @@ int main() {
     }
     return 0;
 }
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+struct Product {
+    int id;
+    string name;
+    float price;
+};
+
+void showMenu(const vector<Product>& products) {
+    cout << "\n--- Super Shop Menu ---" << endl;
+    cout << left << setw(10) << "ID" << setw(20) << "Product" << "Price" << endl;
+    for (const auto& p : products) {
+        cout << left << setw(10) << p.id << setw(20) << p.name << "$" << fixed << setprecision(2) << p.price << endl;
+    }
+}
+
+int main() {
+    vector<Product> inventory = {
+        {1, "Bread", 2.50},
+        {2, "Milk", 1.80},
+        {3, "Eggs", 3.20},
+        {4, "Butter", 4.50}
+    };
+
+    vector<pair<Product, int>> cart;
+    int choice, quantity;
+    char cont;
+
+    do {
+        showMenu(inventory);
+        cout << "\nEnter Product ID to buy: ";
+        cin >> choice;
+
+        bool found = false;
+        for (const auto& p : inventory) {
+            if (p.id == choice) {
+                cout << "Enter quantity: ";
+                cin >> quantity;
+                cart.push_back({p, quantity});
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) cout << "Invalid ID!" << endl;
+
+        cout << "Add more items? (y/n): ";
+        cin >> cont;
+    } while (cont == 'y' || cont == 'Y');
+
+    float total = 0;
+    cout << "\n--- Final Receipt ---" << endl;
+    cout << left << setw(20) << "Item" << setw(10) << "Qty" << "Total" << endl;
+    for (const auto& item : cart) {
+        float subtotal = item.first.price * item.second;
+        cout << left << setw(20) << item.first.name << setw(10) << item.second << "$" << subtotal << endl;
+        total += subtotal;
+    }
+    cout << "----------------------" << endl;
+    cout << "Total Amount: $" << total << endl;
+
+    return 0;
+}
+
