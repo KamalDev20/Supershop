@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Transaction {
+public:
+    string type;
+    double amount;
+    Transaction(string t, double a) : type(t), amount(a) {}
+};
+
+class BankAccount {
+private:
+    string accountHolder;
+    int accountNumber;
+    double balance;
+    vector<Transaction> history;
+
+public:
+    BankAccount(string name, int id, double initial) {
+        accountHolder = name;
+        accountNumber = id;
+        balance = initial;
+    }
+
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            history.push_back(Transaction("Deposit", amount));
+        }
+    }
+
+    bool withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            history.push_back(Transaction("Withdrawal", amount));
+            return true;
+        }
+        return false;
+    }
+
+    void displayDetails() {
+        cout << "\nHolder: " << accountHolder << "\nID: " << accountNumber;
+        cout << "\nBalance: $" << balance << "\nTransactions:";
+        for (const auto& t : history) {
+            cout << "\n - " << t.type << ": $" << t.amount;
+        }
+        cout << endl;
+    }
+
+    int getId() { return accountNumber; }
+};
+
+int main() {
+    vector<BankAccount> accounts;
+    int choice;
+    
+    while (true) {
+        cout << "\n1. Create Account\n2. Deposit\n3. Withdraw\n4. Show All\n5. Exit\nChoice: ";
+        cin >> choice;
+
+        if (choice == 5) break;
+
+        if (choice == 1) {
+            string name;
+            int id;
+            double initial;
+            cout << "Name: "; cin >> name;
+            cout << "ID: "; cin >> id;
+            cout << "Initial: "; cin >> initial;
+            accounts.push_back(BankAccount(name, id, initial));
+        } else if (choice == 2 || choice == 3) {
+            int id;
+            double amt;
+            cout << "Account ID: "; cin >> id;
+            cout << "Amount: "; cin >> amt;
+            for (auto& acc : accounts) {
+                if (acc.getId() == id) {
+                    if (choice == 2) acc.deposit(amt);
+                    else acc.withdraw(amt);
+                }
+            }
+        } else if (choice == 4) {
+            for (auto& acc : accounts) acc.displayDetails();
+        }
+    }
+    return 0;
+}
