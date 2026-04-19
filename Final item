@@ -4,7 +4,7 @@
 // Structure to store product details
 struct Product {
     int id;
-    char name[30];
+    char name[50];
     float price;
     int stock;
 };
@@ -20,7 +20,7 @@ void displayMenu(struct Product shop[], int size) {
 int main() {
     // Initializing shop inventory
     struct Product inventory[] = {
-        {101, "Milk", 50.0, 20},
+        {101, "Milk", 40.0, 20},
         {102, "Bread", 35.0, 15},
         {103, "Eggs (doz)", 120.0, 10},
         {104, "Rice (1kg)", 70.0, 50}
