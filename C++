@@ -82,4 +82,11 @@ int main() {
     return 0;
 }
 
+#include <iostream>  // Header library for input/output
+using namespace std; // Use standard library names
+
+int main() {         // The entry point of every program
+    cout << "Hello World!"; // Outputs text to the screen
+    return 0;        // Signals successful execution
+}
 
