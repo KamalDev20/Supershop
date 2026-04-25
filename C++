@@ -90,5 +90,103 @@ int main() {         // The entry point of every program
     return 0;        // Signals successful execution
 }
 
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
-// The end //
+using namespace std;
+
+class Employee {
+private:
+    int id;
+    string name;
+    string department;
+    double salary;
+
+public:
+    Employee(int i, string n, string d, double s) : id(i), name(n), department(d), salary(s) {}
+
+    int getId() const { return id; }
+    string getName() const { return name; }
+    string getDept() const { return department; }
+    double getSalary() const { return salary; }
+
+    void updateDetails(string n, string d, double s) {
+        name = n;
+        department = d;
+        salary = s;
+    }
+
+    void display() const {
+        cout << "ID: " << id << " | Name: " << name << " | Dept: " << department << " | Salary: $" << salary << endl;
+    }
+};
+
+class ManagementSystem {
+private:
+    vector<Employee> employees;
+
+public:
+    void addEmployee() {
+        int id;
+        string name, dept;
+        double salary;
+        cout << "Enter ID: "; cin >> id;
+        cin.ignore();
+        cout << "Enter Name: "; getline(cin, name);
+        cout << "Enter Dept: "; getline(cin, dept);
+        cout << "Enter Salary: "; cin >> salary;
+        employees.push_back(Employee(id, name, dept, salary));
+    }
+
+    void showAll() const {
+        if (employees.empty()) {
+            cout << "No records found." << endl;
+            return;
+        }
+        for (const auto& emp : employees) emp.display();
+    }
+
+    void searchEmployee(int id) const {
+        for (const auto& emp : employees) {
+            if (emp.getId() == id) {
+                emp.display();
+                return;
+            }
+        }
+        cout << "Employee not found." << endl;
+    }
+
+    void deleteEmployee(int id) {
+        auto it = remove_if(employees.begin(), employees.end(), [id](const Employee& e) {
+            return e.getId() == id;
+        });
+        if (it != employees.end()) {
+            employees.erase(it, employees.end());
+            cout << "Record deleted." << endl;
+        } else {
+            cout << "Record not found." << endl;
+        }
+    }
+};
+
+int main() {
+    ManagementSystem sys;
+    int choice, id;
+    while (true) {
+        cout << "\n1. Add 2. View All 3. Search 4. Delete 5. Exit\nChoice: ";
+        cin >> choice;
+        if (choice == 5) break;
+        switch (choice) {
+            case 1: sys.addEmployee(); break;
+            case 2: sys.showAll(); break;
+            case 3: cout << "ID: "; cin >> id; sys.searchEmployee(id); break;
+            case 4: cout << "ID: "; cin >> id; sys.deleteEmployee(id); break;
+            default: cout << "Invalid choice.";
+        }
+    }
+    return 0;
+}
+
+
