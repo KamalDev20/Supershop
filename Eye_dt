@@ -118,7 +118,7 @@ int main() {
                 sms.searchStudent(id);
                 break;
             }
-            case 4: {
+            case 5: {
                 int id;
                 cout << "Delete ID: "; cin >> id;
                 sms.removeStudent(id);
