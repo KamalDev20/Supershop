@@ -23,7 +23,7 @@ int main() {
         {101, "Milk", 40.0, 20},
         {102, "Bread", 35.0, 15},
         {103, "Eggs (doz)", 120.0, 10},
-        {104, "Rice (1kg)", 70.0, 50}
+        {104, "Rice (1kg)", 70.0, 90}
     };
     int n = 4;
     int choice, qty, found;
