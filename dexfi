@@ -1,0 +1,93 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+contract SimpleDEX is ERC20 {
+    IERC20 public token;
+
+    constructor(address _token) ERC20("Liquidity Pool Token", "LPT") {
+        token = IERC20(_token);
+    }
+
+    function getReserve() public view returns (uint256) {
+        return token.balanceOf(address(this));
+    }
+
+    function addLiquidity(uint256 _amount) public returns (uint256) {
+        uint256 liquidity;
+        if (totalSupply() == 0) {
+            liquidity = _amount;
+        } else {
+            liquidity = (_amount * totalSupply()) / getReserve();
+        }
+        token.transferFrom(msg.sender, address(this), _amount);
+        _mint(msg.sender, liquidity);
+        return liquidity;
+    }
+
+    function removeLiquidity(uint256 _amount) public returns (uint256) {
+        uint256 reserve = getReserve();
+        uint256 amount = (_amount * reserve) / totalSupply();
+        _burn(msg.sender, _amount);
+        token.transfer(msg.sender, amount);
+        return amount;
+    }
+
+    function getSwapAmount(uint256 _amountIn, uint256 _reserveIn, uint256 _reserveOut) public pure returns (uint256) {
+        uint256 amountInWithFee = _amountIn * 997;
+        uint256 numerator = amountInWithFee * _reserveOut;
+        uint256 denominator = (_reserveIn * 1000) + amountInWithFee;
+        return numerator / denominator;
+    }
+
+    function swap(uint256 _amountIn) public returns (uint256) {
+        uint256 reserveIn = getReserve();
+        uint256 amountOut = getSwapAmount(_amountIn, reserveIn, address(this).balance);
+        token.transferFrom(msg.sender, address(this), _amountIn);
+        payable(msg.sender).transfer(amountOut);
+        return amountOut;
+    }
+}
+
+
+import React, { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import DEXABI from './SimpleDEX.json';
+
+const DEX_ADDRESS = "0x...";
+const TOKEN_ADDRESS = "0x...";
+
+function App() {
+  const [provider, setProvider] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [amount, setAmount] = useState('');
+
+  useEffect(() => {
+    const init = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(DEX_ADDRESS, DEXABI.abi, signer);
+      setProvider(signer);
+      setContract(contract);
+    };
+    init();
+  }, []);
+
+  const addLiquidity = async () => {
+    const tx = await contract.addLiquidity(ethers.utils.parseEther(amount));
+    await tx.wait();
+  };
+
+  const swapTokens = async () => {
+    const tx = await contract.swap(ethers.utils.parseEther(amount));
+    await tx.wait();
+  };
+
+  return (
+    <div>
+      <h1>Simple DEX</h1>
+      <input type="number" onChange={e => setAmount(e.target.value)} placeholder="Amount" />
+      <button onClick={addLiquidity}>Add Liquidity</button>
+      <button onClick={swapTokens}>Swap</
