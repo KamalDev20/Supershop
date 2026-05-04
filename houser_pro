@@ -1,0 +1,153 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace StudentManagementSystem
+{
+    public interface IRepository<T>
+    {
+        void Add(T item);
+        void Remove(int id);
+        T Get(int id);
+        IEnumerable<T> GetAll();
+        void Save();
+    }
+
+    public abstract class Person
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+
+        public override string ToString()
+        {
+            return $"ID: {Id} | Name: {Name} | Email: {Email}";
+        }
+    }
+
+    public class Student : Person
+    {
+        public double Gpa { get; set; }
+        public string Major { get; set; }
+
+        public override string ToString()
+        {
+            return base.ToString() + $" | GPA: {Gpa} | Major: {Major}";
+        }
+    }
+
+    public class StudentRepository : IRepository<Student>
+    {
+        private List<Student> _students = new List<Student>();
+        private readonly string _filePath = "students.txt";
+
+        public StudentRepository()
+        {
+            Load();
+        }
+
+        public void Add(Student item)
+        {
+            _students.Add(item);
+        }
+
+        public void Remove(int id)
+        {
+            var student = Get(id);
+            if (student != null) _students.Remove(student);
+        }
+
+        public Student Get(int id)
+        {
+            return _students.FirstOrDefault(s => s.Id == id);
+        }
+
+        public IEnumerable<Student> GetAll()
+        {
+            return _students;
+        }
+
+        public void Save()
+        {
+            using (StreamWriter writer = new StreamWriter(_filePath))
+            {
+                foreach (var s in _students)
+                {
+                    writer.WriteLine($"{s.Id},{s.Name},{s.Email},{s.Gpa},{s.Major}");
+                }
+            }
+        }
+
+        private void Load()
+        {
+            if (!File.Exists(_filePath)) return;
+
+            var lines = File.ReadAllLines(_filePath);
+            foreach (var line in lines)
+            {
+                var parts = line.Split(',');
+                _students.Add(new Student
+                {
+                    Id = int.Parse(parts[0]),
+                    Name = parts[1],
+                    Email = parts[2],
+                    Gpa = double.Parse(parts[3]),
+                    Major = parts[4]
+                });
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var repo = new StudentRepository();
+            bool running = true;
+
+            while (running)
+            {
+                Console.Clear();
+                Console.WriteLine("=== STUDENT MANAGEMENT SYSTEM ===");
+                Console.WriteLine("1. Add Student");
+                Console.WriteLine("2. View All Students");
+                Console.WriteLine("3. Find Student by ID");
+                Console.WriteLine("4. Delete Student");
+                Console.WriteLine("5. Save & Exit");
+                Console.Write("\nSelect option: ");
+
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        var s = new Student();
+                        Console.Write("Enter ID: "); s.Id = int.Parse(Console.ReadLine());
+                        Console.Write("Enter Name: "); s.Name = Console.ReadLine();
+                        Console.Write("Enter Email: "); s.Email = Console.ReadLine();
+                        Console.Write("Enter GPA: "); s.Gpa = double.Parse(Console.ReadLine());
+                        Console.Write("Enter Major: "); s.Major = Console.ReadLine();
+                        repo.Add(s);
+                        break;
+                    case "2":
+                        foreach (var student in repo.GetAll()) Console.WriteLine(student);
+                        Console.ReadKey();
+                        break;
+                    case "3":
+                        Console.Write("Enter ID: ");
+                        var found = repo.Get(int.Parse(Console.ReadLine()));
+                        Console.WriteLine(found != null ? found.ToString() : "Not found.");
+                        Console.ReadKey();
+                        break;
+                    case "4":
+                        Console.Write("Enter ID to delete: ");
+                        repo.Remove(int.Parse(Console.ReadLine()));
+                        break;
+                    case "5":
+                        repo.Save();
+                        running = false;
+                        break;
+                }
+            }
+        }
+    }
+}
