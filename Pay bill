@@ -13,6 +13,7 @@ int main() {
         {2, "Bread", 2.20},
         {3, "Milk", 1.80},
         {4, "Eggs", 3.50}
+        {5, "apple", 4.50}
     };
     int n = 4, id, qty, found;
     float total = 0;
