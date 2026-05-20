@@ -4,7 +4,7 @@
 // Structure to store product details
 struct Product {
     int id;
-    char name[50];
+    char name[60];
     float price;
     int stock;
 };
