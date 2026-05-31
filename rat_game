@@ -70,3 +70,5 @@ int main() {
     solveMaze(maze);
     return 0;
 }
+
+low
