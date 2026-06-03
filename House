@@ -1,0 +1,80 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class House {
+    private String address;
+    private int bedrooms;
+    private int bathrooms;
+    private boolean hasGarage;
+    private List<String> residents;
+
+    public House(String address, int bedrooms, int bathrooms, boolean hasGarage) {
+        this.address = address;
+        this.bedrooms = bedrooms;
+        this.bathrooms = bathrooms;
+        this.hasGarage = hasGarage;
+        this.residents = new ArrayList<>();
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getBedrooms() {
+        return bedrooms;
+    }
+
+    public void setBedrooms(int bedrooms) {
+        this.bedrooms = bedrooms;
+    }
+
+    public int getBathrooms() {
+        return bathrooms;
+    }
+
+    public void setBathrooms(int bathrooms) {
+        this.bathrooms = bathrooms;
+    }
+
+    public boolean isHasGarage() {
+        return hasGarage;
+    }
+
+    public void setHasGarage(boolean hasGarage) {
+        this.hasGarage = hasGarage;
+    }
+
+    public List<String> getResidents() {
+        return residents;
+    }
+
+    public void addResident(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.residents.add(name);
+        }
+    }
+
+    public void removeResident(String name) {
+        this.residents.remove(name);
+    }
+
+    public void displayHouseDetails() {
+        System.out.println("House Details:");
+        System.out.println("Address: " + address);
+        System.out.println("Bedrooms: " + bedrooms);
+        System.out.println("Bathrooms: " + bathrooms);
+        System.out.println("Has Garage: " + (hasGarage ? "Yes" : "No"));
+        System.out.println("Residents: " + (residents.isEmpty() ? "None" : String.join(", ", residents)));
+    }
+
+    public static void main(String[] args) {
+        House myHouse = new House("123 Main Street", 3, 2, true);
+        myHouse.addResident("Alice");
+        myHouse.addResident("Bob");
+        myHouse.displayHouseDetails();
+    }
+}
