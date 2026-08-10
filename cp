@@ -20,6 +20,4 @@ int main() {
         default: std::cout << "Invalid operator!";
     }
     return 0;
-}
-
-/\//\
+}cs
